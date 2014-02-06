@@ -1,0 +1,20 @@
+[
+  {
+    "hour": 1,
+    "day": 3,
+    "text": ["KP", "C114", "BTP"],
+    "changed": false
+  },
+  {
+    "hour": 2,
+    "day": 3,
+    "text": ["KP", "C114", "BTP"],
+    "changed": false
+  },
+  {
+    "hour": 2,
+    "day": 4,
+    "text": ["BE", "C023", "MPO"],
+    "changed": true
+  }
+]
