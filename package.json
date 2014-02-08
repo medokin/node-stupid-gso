@@ -1,6 +1,6 @@
 {
   "name": "stupid-gso",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Georg-Simon-Ohm school (GSO) Cologne - Timetable API",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,8 @@
   "dependencies": {
     "rsvp": "~3.0.3",
     "request": "~2.33.0",
-    "cheerio": "~0.13.1"
+    "cheerio": "~0.13.1",
+    "memory-cache": "0.0.5"
   },
   "devDependencies": {
     "express": "~3.4.8"

@@ -45,7 +45,7 @@ var api = {
   timetable: function(type, element, week){
     return new RSVP.Promise(function (resolve, reject) {
 
-      request('http://stupid.gso-koeln.de/frames/navbar.htm').then(function (content) {
+      request('http://stupid.gso-koeln.de/frames/navbar.htm', 86400000).then(function (content) {
         return parser.elements.getRemoteId(content, type, element);
       })
         .then(function(remoteId){

@@ -2,7 +2,7 @@ var request = require("../../lib/helper/request");
 
 describe("On http request", function() {
   var httpServer = null;
-  
+  var counter = 0;
   beforeEach(function() {
     var express = require('express');
     var app = express();
@@ -13,8 +13,13 @@ describe("On http request", function() {
     
     app.get('/noRespond', function(req, res){
 
-    }); 
-    
+    });
+
+    app.get('/cached', function(req, res){
+      counter++;
+      res.send('counter: '+counter);
+    });
+
     httpServer = require('http').createServer(app);
     httpServer.listen('3333');
     
@@ -106,6 +111,60 @@ describe("On http request", function() {
       
     });
     
+  });
+
+  describe("when request gets executed twice", function() {
+
+    it("it should perform the request", function() {
+      var ready = null;
+      var errorMessage = null;
+      var content = null;
+
+      request('http://localhost:3333/cached', 9999999)
+        .then(function(value){
+          ready = true;
+          content = value;
+        }, function(error){
+          ready = true;
+          errorMessage = error;
+        });
+
+      waitsFor(function(){
+        return ready;
+      });
+
+      runs(function(){
+        expect(errorMessage).toBe(null);
+        expect(content).toBe("counter: 1");
+      });
+
+    });
+
+    it("it should get cached result", function() {
+      var ready = null;
+      var errorMessage = null;
+      var content = null;
+
+      request('http://localhost:3333/cached', 9999999)
+        .then(function(value){
+          ready = true;
+          content = value;
+        }, function(error){
+          ready = true;
+          errorMessage = error;
+        });
+
+      waitsFor(function(){
+        return ready;
+      });
+
+      runs(function(){
+        expect(errorMessage).toBe(null);
+        expect(content).toBe("counter: 1");
+      });
+
+    });
+
   });
 
 });
