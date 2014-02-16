@@ -13,7 +13,7 @@ var api = {
   weeks: function(){
     return new RSVP.Promise(function (resolve, reject) {
 
-      request('http://stupid.gso-koeln.de/frames/navbar.htm').then(function (body) {
+      request('http://stupid.gso-koeln.de/frames/navbar.htm', 100).then(function (body) {
 
         parser.weeks.parse(body, function(weeks){
           resolve(weeks);
@@ -29,7 +29,7 @@ var api = {
   elements: function(type){
     return new RSVP.Promise(function (resolve, reject) {
 
-      request('http://stupid.gso-koeln.de/frames/navbar.htm').then(function (body) {
+      request('http://stupid.gso-koeln.de/frames/navbar.htm', 1000).then(function (body) {
 
         parser.elements.parse(body, type, function(elements){
           resolve(elements);
@@ -45,7 +45,7 @@ var api = {
   timetable: function(type, element, week){
     return new RSVP.Promise(function (resolve, reject) {
 
-      request('http://stupid.gso-koeln.de/frames/navbar.htm', 86400000).then(function (content) {
+      request('http://stupid.gso-koeln.de/frames/navbar.htm', 5000).then(function (content) {
         return parser.elements.getRemoteId(content, type, element);
       })
         .then(function(remoteId){
