@@ -1,76 +1,139 @@
-var parser = require('./lib/parser');
-var request = require('./lib/helper/request');
-var strPad = require('./lib/helper/strPad');
+var _ = require('lodash');
+var requestLib = require('request');
 var RSVP = require('rsvp');
 
-var api = {
-  types: function(){
-    return new RSVP.Promise(function (resolve) {
-      resolve(['classes', 'teachers', 'rooms']);
-    });
-  },
+var requestLib = requestLib.defaults({jar: true});
 
-  weeks: function(){
-    return new RSVP.Promise(function (resolve, reject) {
+var loginData = null;
 
-      request('http://stupid.gso-koeln.de/frames/navbar.htm', 100).then(function (body) {
-
-        parser.weeks.parse(body, function(weeks){
-          resolve(weeks);
-        });
-
-      }, function(error){
-        reject(error);
-      });
-
-    });
-  },
-
-  elements: function(type){
-    return new RSVP.Promise(function (resolve, reject) {
-
-      request('http://stupid.gso-koeln.de/frames/navbar.htm', 1000).then(function (body) {
-
-        parser.elements.parse(body, type, function(elements){
-          resolve(elements);
-        });
-
-      }, function(error){
-        reject(error);
-      });
-
-    });
-  },
-
-  timetable: function(type, element, week){
-    return new RSVP.Promise(function (resolve, reject) {
-
-      request('http://stupid.gso-koeln.de/frames/navbar.htm', 5000).then(function (content) {
-        return parser.elements.getRemoteId(content, type, element);
-      })
-        .then(function(remoteId){
-          var typesMap = {
-            teachers: 't',
-            classes: 'c',
-            rooms: 'r'
-          };
-
-          return request('http://stupid.gso-koeln.de/' + strPad(week,2) + '/' + typesMap[type] + '/' + typesMap[type] + remoteId + '.htm', 1000);
-
-        })
-        .then(function(content){
-          return parser.timetable.parse(content);
-        })
-        .then(function(lessons){
-          resolve(lessons);
-        }, function(error){
-          reject(error);
-        });
-
-    });
+function request(method, params){
+  
+  if(!params){
+    params = {};
   }
+  
+  var message = {
+    id: 1,
+    method: method,
+    params: params,
+    jsonrpc: '2.0'
+  };
+  
+  var options = {
+    uri: 'https://webuntis.stadt-koeln.de/WebUntis/jsonrpc.do?school=K175055',
+    method: 'post',
+    json: message
+  };
+  
+  return new RSVP.Promise(function (resolve, reject) {
+    requestLib(options, function(err, res, body){
+      if(err){
+        reject(err);
+      }
+      
+      if(body.error){
+        if(body.error.code === -8520){
+          return login().then(function(){
+            request(method, params).then(function(data){
+              resolve(data);
+            });
+          });
+        }
+        
+        reject(body.error.message);
+      }
+      
+      if(body.result === undefined){
+        reject('No result');
+      }
+      
+      resolve(body.result);
+    });
+    
+  }); 
+  
 }
 
-module.exports = api;
+function login(){
+  return request('authenticate', loginData).then(function(data){
+    sessionId = data.sessionId;
+    return true;
+  });
+}
+
+function UntisRpc(user, password, client){
+  loginData = {
+    user: user,
+    password: password,
+    client: client
+  };
+}
 
 
+var p = UntisRpc.prototype;
+
+p.teachers = function(){
+  return request('getTeachers');
+};
+
+p.classes = function(){
+  return request('getKlassen');
+};
+
+p.rooms = function(){
+  return request('getRooms');
+};
+
+p.subjects = function(){
+  return request('getSubjects');
+};
+
+p.departments = function(){
+  return request('getDepartments');
+};
+
+p.holidays = function(){
+  return request('getHolidays');
+};
+
+p.timegridUnits = function(){
+  return request('getTimegridUnits');
+};
+
+p.statusData = function(){
+  return request('getTimegridUnits');
+};
+
+p.currentSchoolyear = function(){
+  return request('getCurrentSchoolyear');
+};
+
+p.schoolyears = function(){
+  return request('getSchoolyears');
+};
+
+p.timetable = function(id, type, startDate, endDate){
+  return request('getTimetable', {
+    id: id,
+    type: type,
+    startDate: startDate,
+    endDate: endDate
+  });
+};
+
+p.studentsForPeriod = function(ttid){
+  return request('getStudentsForPeriod', {
+    ttid: ttid
+  });
+};
+
+p.latestImportTime = function(){
+  return request('getLatestImportTime');
+};
+
+p.substitutions = function(){
+  return request('getSubstitutions');
+};
+
+
+module.exports = UntisRpc;

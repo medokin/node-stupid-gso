@@ -1,6 +1,6 @@
 {
   "name": "stupid-gso",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Georg-Simon-Ohm school (GSO) Cologne - Timetable API",
   "main": "index.js",
   "scripts": {
@@ -23,12 +23,9 @@
   },
   "homepage": "https://github.com/medokin/node-stupid-gso",
   "dependencies": {
-    "rsvp": "~3.0.3",
-    "request": "~2.33.0",
-    "cheerio": "~0.13.1",
-    "memory-cache": "0.0.5"
-  },
-  "devDependencies": {
-    "express": "~3.4.8"
+    "rsvp": "^3.0.6",
+    "request": "^2.34.0",
+    "lodash": "^2.4.1",
+    "moment": "^2.6.0"
   }
 }
