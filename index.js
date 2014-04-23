@@ -1,4 +1,3 @@
-var _ = require('lodash');
 var requestLib = require('request');
 var RSVP = require('rsvp');
 
@@ -56,7 +55,6 @@ function request(method, params){
 
 function login(){
   return request('authenticate', loginData).then(function(data){
-    sessionId = data.sessionId;
     return true;
   });
 }
