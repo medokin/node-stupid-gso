@@ -17,28 +17,16 @@ npm install stupid-gso
 - Use it!
 
 ```js
-var stupid = require('stupid-gso');
+var Stupid = require('stupid-gso');
 
-// Gets available weeks
-stupid.weeks().then(function(types){
-  console.log(types);
+var client = new Stupid('user', 'password', 'client');
+
+
+client.teachers().then(function(teachers){
+  console.log(teachers);
 });
 
-
-// Gets all types
-stupid.types().then(function(types){
-  console.log(types);
-});
-
-// Gets all elements
-stupid.elements(type).then(function(elements){
-  console.log(elements);
-});
-
-// Gets a timetable
-stupid.timetable(type, element, week).then(function(lessons){
-  console.log(lessons);
-});
+// Look into the code
 
 
 ```
