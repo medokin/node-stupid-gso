@@ -99,7 +99,7 @@ p.timegridUnits = function(){
 };
 
 p.statusData = function(){
-  return request('getTimegridUnits');
+  return request('getStatusData');
 };
 
 p.currentSchoolyear = function(){
@@ -129,8 +129,12 @@ p.latestImportTime = function(){
   return request('getLatestImportTime');
 };
 
-p.substitutions = function(){
-  return request('getSubstitutions');
+p.substitutions = function(startDate, endDate, departmentId){
+  return request('getSubstitutions', {
+      startDate: startDate,
+      endDate: endDate,
+      departmentId: departmentId
+  });
 };
 
 

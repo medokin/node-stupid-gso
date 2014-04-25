@@ -1,6 +1,6 @@
 {
   "name": "stupid-gso",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Georg-Simon-Ohm school (GSO) Cologne - Timetable API",
   "main": "index.js",
   "scripts": {
